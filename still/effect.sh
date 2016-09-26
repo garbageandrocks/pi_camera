@@ -4,10 +4,9 @@ PS3="Select an Image Effect: "
 
 OPTIONS="none negative solarise sketch denoise emboss oilpaint hatch gpen pastel watercolour film blur saturation colourswap washedout posterise colourpoint colourbalance cartoon quit" 
 
-select opt in $OPTIONS; 
-do
+opt="$(iselect -a -S $OPTIONS)"
   case $opt in
-    "none")
+    none)
       ;&
     "negative")
       ;&
@@ -47,7 +46,7 @@ do
       ;&
     "cartoon")
       DATE=$(date +"%Y-%m-%d_%H%M%S")    
-      echo "raspistill -hf -ifx $effect -o /home/pi/photos/$DATE.jpg"
+      echo "raspistill -hf -ifx $opt-o /home/pi/photos/$DATE.jpg"
 		  raspistill -hf -ifx $opt -o /home/pi/photos/$DATE.jpg
       ;;
     "quit")
@@ -58,6 +57,5 @@ do
       echo invalid response
       ;;
   esac
-done
 
 
