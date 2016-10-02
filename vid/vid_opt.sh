@@ -140,7 +140,7 @@ read_filename()
 #
 # function:     write_vars_to_file
 # description:  writes an array of variable to a file
-# input:        array, filename, header_str, footer_str
+# input:        array, filename
 # output:       filename.txt
 # 
 write_vars_to_file()
@@ -148,18 +148,12 @@ write_vars_to_file()
 	# label input params
 	array=("${!1}")
     filename=$2
-    header_str=$3
-    footer_str=$4
 
-	PS3=$ps3_str
-
-    echo $header_str > $filename.txt
+    rm $filename.txt
 
     for i in ${!array[@]}; do
         echo ${array[i]} >> $filename.txt
 	done
-
-    echo $footer_str >> $filename.txt
 }
 main()
 {
@@ -207,26 +201,28 @@ main()
                 select_array "Specify H264 encoding profile: " PROFILE[@] config_vars[10]
                 ;;
             "timed")
-                read_number "Enter desired record time: " config_vars[11]
-                read_number "Enter desired pause time:  " config_vars[12]
+                read_number "Enter desired record time: " record_t
+                read_number "Enter desired pause time:  " pause_t
+                comma=","
+                config_vars[11]=$record_t$comma$pause_t
                 ;;
             "signal")
-                select_array "Cycle between capture and pause on signal: " config_vars[13]			
+                select_array "Cycle between capture and pause on signal: " config_vars[12]			
                 ;;
             "keypress")
-                select_array "Cycle between capture and pause on keypress: " config_vars[14]
+                select_array "Cycle between capture and pause on keypress: " config_vars[13]
                 ;;
             "initial")
-                select_array "Set the initial camera state: " STATE[@] config_vars[15]
+                select_array "Set the initial camera state: " STATE[@] config_vars[14]
                 ;;
             "qp")
-                read_number "Enter the Quantisation parameter. Use approximately 10-40. Default 0 (off): " config_vars[16]
+                read_number "Enter the Quantisation parameter. Use approximately 10-40. Default 0 (off): " config_vars[15]
                 ;;
             "inline")
-                select_array "Insert inline headers (SPS, PPS) to stream: " TRUTH[@] config_vars[17]
+                select_array "Insert inline headers (SPS, PPS) to stream: " TRUTH[@] config_vars[16]
                 ;;
             "segment")
-                read_num "Segment output file in to multiple files at specified interval (ms): " config_vars[18]
+                read_num "Segment output file in to multiple files at specified interval (ms): " config_vars[17]
                 ;;
             "wrap")
                 select_array "Insert inline headers (SPS, PPS) to stream: " TRUTH[@] config_vars[18]
@@ -274,7 +270,7 @@ main()
                 ;;
             "quit")
                 echo writing config vars to file...
-                write_vars_to_file config_vars[@] "config_vars" "Begin writing config variables" "End writing config variables"
+                write_vars_to_file config_vars[@] "config_vars"
                 echo done... Goodbye
                 break
                 ;;
